@@ -1,0 +1,31 @@
+.php-return-info {
+    font-weight: bold;
+}
+
+.php-error {
+    color: red;
+}
+
+.php-debug {
+    color: blue;
+}
+
+.php-debug::before {
+    content: 'Debug: ';
+    color: #22DD33;
+}
+
+input {
+    margin: 1em;
+}
+
+label {
+    margin: 1em;
+}
+
+/* Typeahead.js styling */
+
+.tt-dropdown-menu {
+  max-height: 150px;
+  overflow-y: auto;
+}
