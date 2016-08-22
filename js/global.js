@@ -8,6 +8,9 @@ $(document).ready(function () {
     - Option to choose to sort results by time of arrival at destination
     - More lenient validity checking to allow for Capetown/Simons town/St James/Diep Rivier/etc
     - Visual UI/UX design!
+    
+    design:
+    - Add responsive design
 
 */
 
