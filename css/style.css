@@ -22,10 +22,3 @@ input {
 label {
     margin: 1em;
 }
-
-/* Typeahead.js styling */
-
-.tt-dropdown-menu {
-  max-height: 150px;
-  overflow-y: auto;
-}
