@@ -5,7 +5,7 @@ $(document).ready(function () {
 /* TODO: features:
     - On event 'change in input.typeahead', check if input.typeahead.val() is in stations, and alert user with green/red if it is/isn't
     - More options... to be able to choose custom date/time
-    - Optino to choose to sort results by time of arrival at destination
+    - Option to choose to sort results by time of arrival at destination
     - More lenient validity checking to allow for Capetown/Simons town/St James/Diep Rivier/etc
     - Visual UI/UX design!
 
