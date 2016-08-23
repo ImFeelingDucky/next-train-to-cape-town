@@ -86,8 +86,11 @@ $("input#submit").on('click', function() {
     
     // // Input precalculation //
     
+    loc = $.trim(loc);
+    dest = $.trim(dest);
+    
     // Validation
-    if ($.trim(loc) != "" && $.trim(dest) != "") {
+    if (loc != "" && dest != "") {
     
         switch (dest.toLowerCase()) {
             case "capetown":
