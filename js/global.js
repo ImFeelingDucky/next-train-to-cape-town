@@ -37,7 +37,7 @@ var stations = [
     'Claremont',
     'Harfield Road',
     'Kenilworth',
-    'Wenelworth', // Cheeky inside joke ya dingus
+    'Wenelworth', // For more information on this station please message me
     'Wynberg',
     'Wittebome',
     'Plumstead',
@@ -76,7 +76,7 @@ $("input#submit").on('click', function() {
         dest = $("input#destination").val();
     }
     
-    var day = new Date().getDay(); // TODO: allow user to select arbitrary date (date is default today)
+    var day = new Date().getDay(); // TODO: allow user to select arbitrary date (date is default today) (API can handle arbitrary dates/times)
     var time_now = getTime(); // TODO: allow user to select abitrary time (time is default time now)
     var direction = "";
     
@@ -89,7 +89,126 @@ $("input#submit").on('click', function() {
     // Validation
     if ($.trim(loc) != "" && $.trim(dest) != "") {
     
-        // Determine direction
+        switch (dest.toLowerCase()) {
+            case "capetown":
+                dest = "Cape Town";
+                break;
+            case "saltriver":
+                dest = "Salt River";
+                break;
+            case "saltrivier":
+                dest = "Salt River";
+                break;
+            case "mont":
+                dest = "Claremont";
+                break;
+            case "harfieldroad":
+                dest = "Harfield Road";
+                break;
+            case "harfieldrd":
+                dest = "Harfield Road";
+                break;
+            case "harfield rd":
+                dest = "Harfield Road";
+                break;
+            case "harfield":
+                dest = "Harfield Road";
+                break;
+            case "diep rivier":
+                dest = "Dieprivier";
+                break;
+            case "diep river":
+                dest = "Dieprivier";
+                break;
+            case "diepriver":
+                dest = "Dieprivier";
+                break;
+            case "falsebay":
+                dest = "False Bay";
+                break;
+            case "st james":
+                dest = "St. James";
+                break;
+            case "stjames":
+                dest = "St. James";
+                break;
+            case "fishhoek":
+                dest = "Fish Hoek";
+                break;
+            case "simons town":
+                dest = "Simon's Town";
+                break;
+            case "simonstown":
+                dest = "Simon's Town";
+                break;
+            case "simon'stown":
+                dest = "Simon's Town";
+                break;
+            case "idolophu kasimon":
+                dest = "Simon's Town";
+                break;
+        }
+        
+        switch (loc.toLowerCase()) {
+            case "capetown":
+                loc = "Cape Town";
+                break;
+            case "saltriver":
+                loc = "Salt River";
+                break;
+            case "saltrivier":
+                loc = "Salt River";
+                break;
+            case "mont":
+                loc = "Claremont";
+                break;
+            case "harfieldroad":
+                loc = "Harfield Road";
+                break;
+            case "harfieldrd":
+                loc = "Harfield Road";
+                break;
+            case "harfield rd":
+                loc = "Harfield Road";
+                break;
+            case "harfield":
+                loc = "Harfield Road";
+                break;
+            case "diep rivier":
+                loc = "Dieprivier";
+                break;
+            case "diep river":
+                loc = "Dieprivier";
+                break;
+            case "diepriver":
+                loc = "Dieprivier";
+                break;
+            case "falsebay":
+                loc = "False Bay";
+                break;
+            case "st james":
+                loc = "St. James";
+                break;
+            case "stjames":
+                loc = "St. James";
+                break;
+            case "fishhoek":
+                loc = "Fish Hoek";
+                break;
+            case "simons town":
+                loc = "Simon's Town";
+                break;
+            case "simonstown":
+                loc = "Simon's Town";
+                break;
+            case "simon'stown":
+                loc = "Simon's Town";
+                break;
+            case "idolophu kasimon":
+                loc = "Simon's Town";
+                break;
+        }
+        
         var locno = $.inArray(loc, stations);
         var destno = $.inArray(dest, stations);
         
@@ -125,7 +244,7 @@ $("input#submit").on('click', function() {
     }
     
     
-    // Don't do default action after all this above!
+    // Don't do default form submit action after all this above!
     return false;
 });
 
