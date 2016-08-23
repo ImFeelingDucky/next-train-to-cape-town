@@ -94,8 +94,6 @@ $("input#submit").on('click', function() {
                 dest = "Cape Town";
                 break;
             case "saltriver":
-                dest = "Salt River";
-                break;
             case "saltrivier":
                 dest = "Salt River";
                 break;
@@ -103,23 +101,13 @@ $("input#submit").on('click', function() {
                 dest = "Claremont";
                 break;
             case "harfieldroad":
-                dest = "Harfield Road";
-                break;
             case "harfieldrd":
-                dest = "Harfield Road";
-                break;
             case "harfield rd":
-                dest = "Harfield Road";
-                break;
             case "harfield":
                 dest = "Harfield Road";
                 break;
             case "diep rivier":
-                dest = "Dieprivier";
-                break;
             case "diep river":
-                dest = "Dieprivier";
-                break;
             case "diepriver":
                 dest = "Dieprivier";
                 break;
@@ -127,8 +115,6 @@ $("input#submit").on('click', function() {
                 dest = "False Bay";
                 break;
             case "st james":
-                dest = "St. James";
-                break;
             case "stjames":
                 dest = "St. James";
                 break;
@@ -136,14 +122,8 @@ $("input#submit").on('click', function() {
                 dest = "Fish Hoek";
                 break;
             case "simons town":
-                dest = "Simon's Town";
-                break;
             case "simonstown":
-                dest = "Simon's Town";
-                break;
             case "simon'stown":
-                dest = "Simon's Town";
-                break;
             case "idolophu kasimon":
                 dest = "Simon's Town";
                 break;
@@ -154,8 +134,6 @@ $("input#submit").on('click', function() {
                 loc = "Cape Town";
                 break;
             case "saltriver":
-                loc = "Salt River";
-                break;
             case "saltrivier":
                 loc = "Salt River";
                 break;
@@ -163,23 +141,13 @@ $("input#submit").on('click', function() {
                 loc = "Claremont";
                 break;
             case "harfieldroad":
-                loc = "Harfield Road";
-                break;
             case "harfieldrd":
-                loc = "Harfield Road";
-                break;
             case "harfield rd":
-                loc = "Harfield Road";
-                break;
             case "harfield":
                 loc = "Harfield Road";
                 break;
             case "diep rivier":
-                loc = "Dieprivier";
-                break;
             case "diep river":
-                loc = "Dieprivier";
-                break;
             case "diepriver":
                 loc = "Dieprivier";
                 break;
@@ -187,8 +155,6 @@ $("input#submit").on('click', function() {
                 loc = "False Bay";
                 break;
             case "st james":
-                loc = "St. James";
-                break;
             case "stjames":
                 loc = "St. James";
                 break;
@@ -196,14 +162,8 @@ $("input#submit").on('click', function() {
                 loc = "Fish Hoek";
                 break;
             case "simons town":
-                loc = "Simon's Town";
-                break;
             case "simonstown":
-                loc = "Simon's Town";
-                break;
             case "simon'stown":
-                loc = "Simon's Town";
-                break;
             case "idolophu kasimon":
                 loc = "Simon's Town";
                 break;
