@@ -181,8 +181,8 @@ $("input#submit").on('click', function() {
                 }
             
             // Checks passed; input is valid. Continue:
-            
             var data_to_send = {"dest": dest, "loc": loc, "direction": direction, "time_now": time_now, "day": day};
+            console.log("Sending data: " + data_to_send);
         
             // Finally, POST the data
             $.post("../ajax/timetable_processor.php", data_to_send, function(data) {
