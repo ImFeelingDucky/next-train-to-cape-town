@@ -6,6 +6,10 @@ label {
     margin: 1em;
 }
 
+.megea-container {
+    overflow: auto;
+}
+
 /* ----
 -- CSS LOADING ANIMATION
 ---- */

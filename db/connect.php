@@ -12,19 +12,22 @@ function gimme_pdo() {
     if(!isset($pdo)) {*/
         
         
-         // Load configuration as an array. Use the actual location of your configuration file
-        /*$config = parse_ini_file('../../config/db_config.ini');
-        $db_host = $config['host'];
-        $db_name = $config['dbname'];
-        $db_user = $config['username'];
-        $db_pass = $config['password'];*/
+         // Load configuration as an array. Use the actual location of the configuration file
+        if (!getenv("CLEARDB_DATABASE_URL")) {
+            $config = parse_ini_file('../../config/db_config.ini');
+            $db_host = $config['host'];
+            $db_name = $config['dbname'];
+            $db_user = $config['username'];
+            $db_pass = $config['password'];
+        } else {
         
-        $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
-        $db_host = $cleardb_url['host'];
-        $db_name = substr($cleardb_url['path'],1);
-        $db_user = $cleardb_url['user'];
-        $db_pass = $cleardb_url['pass'];
+            $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+            $db_host = $cleardb_url['host'];
+            $db_name = substr($cleardb_url['path'],1);
+            $db_user = $cleardb_url['user'];
+            $db_pass = $cleardb_url['pass'];
         
+        }
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // TODO: Connect to this database as a limited user only! Use a specifically created account with min privileges!
         $pdo = new ExtendedPdo(
