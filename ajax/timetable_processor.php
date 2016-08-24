@@ -25,7 +25,7 @@ $day = $_POST['day'];
 $time_now = $_POST['time_now'];
 
 // DEBUG: remove this
-// $time_now = "12:23";
+$time_now = "12:23";
 
 $results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0);
 
