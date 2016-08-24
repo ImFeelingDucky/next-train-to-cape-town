@@ -8,6 +8,7 @@ $(document).ready(function () {
     - Option to choose to sort results by time of arrival at destination
     - More lenient validity checking to allow for Capetown/Simons town/St James/Diep Rivier/etc
     - Visual UI/UX design!
+    - Xhosa translation
     
     design:
     - Add responsive design
@@ -59,6 +60,8 @@ var stations = [
 ];
 
 $("input#submit").on('click', function() {
+    
+    // $(".load-anim").toggle();
     
     var loc = "";
     var dest = "";
@@ -221,20 +224,23 @@ function processResults(data) {
     
     console.log("JSON data: " + data);
     
-    document.getElementById("debug").innerHTML = '<p class="debug">' + data["results_count"] + ' results</p>';
-    document.getElementById("results").innerHTML = "";
+    $("#debug").html('<p class="debug">' + data["results_count"] + ' results</p>');
+    $(".results").text("");
     
     if (data["error"]) {
         
-        document.getElementById("results").innerHTML = '<p class="error">ERROR: ' + data["error"] + '</p>';
+        $(".results").html('<p class="error">ERROR: ' + data["error"] + '</p>');
         
-    } else {
+    } else if (data) {
         /* TODO: make this work */ 
+        // $(".load-anim").toggle;
         for (var i = 0; i < data["trains"].length; i++) {
         // Output these nicely :)
-        $("#results").append('<p class="train">TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] +" at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
+        $(".results").append('<p class="train">TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] +" at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
         }
         
+    } else {
+        $("#debug").text('No data received.');
     }
     
     
