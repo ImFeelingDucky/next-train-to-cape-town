@@ -233,7 +233,7 @@ function processResults(data) {
         
     } else if (data) {
         /* TODO: make this work */ 
-        // $(".load-anim").toggle;
+        // $(".load-anim").toggle
         for (var i = 0; i < data["trains"].length; i++) {
         // Output these nicely :)
         $(".results").append('<p class="train">TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] +" at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
