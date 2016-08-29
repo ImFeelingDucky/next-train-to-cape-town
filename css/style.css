@@ -6,8 +6,8 @@ label {
     margin: 1em;
 }
 
-.megea-container {
-    overflow: auto;
+.mega-container {
+    max-width: 30em;
 }
 
 /* ----

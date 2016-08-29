@@ -21,7 +21,7 @@
             <input type="submit" id="submit" value="Get train times" />
         </form>
 
-        <!-- <div class="load-anim">
+        <div class="load-anim">.load-anim
             <div class="ball"></div>
             <div class="ball"></div>
             <div class="ball"></div>
@@ -30,10 +30,10 @@
             <div class="ball"></div>
             <div class="ball"></div>
             <div class="ball"></div>
-        </div> -->
+        </div>
 
         <div class="results"></div>
-
+        <div class="updates"></div>
         <div id="debug"></div>
 
     </div>
