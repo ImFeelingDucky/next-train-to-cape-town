@@ -270,6 +270,8 @@ $(document).ready(function() {
     $(document).bind("ajaxSend", function() {
         $(".load-anim").show();
         console.log("ajaxSend called: Showing .load-anim");
+        $(".results").text("");
+        $(".debug").text("");
     }).bind("ajaxComplete", function() {
         $(".load-anim").hide();
         console.log("ajaxComplete called: Hiding .load-anim");
