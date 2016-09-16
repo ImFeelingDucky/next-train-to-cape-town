@@ -1,5 +1,5 @@
-<!-- Max Tyrrell -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <title>Train Times</title>
@@ -10,27 +10,25 @@
 
 <body>
     <div class="mega-container">
-        
-        <form method="post">
-            <label for="location">Where are you now?<br>
-                    <input type="text" name="location" class="suggest" id="location" placeholder="E.g. Kenilworth" />
-                </label><br>
-            <label for="destination">Where would you like to go?<br>
-                    <input type="text" name="destination" class="suggest" id="destination" placeholder="E.g. Cape Town" />
-                </label><br>
-            <input type="submit" id="submit" value="Get train times" />
-        </form>
+    <h1>
+        next train to...
+    </h1>
+    <form method="post">
 
-        <div class="load-anim">.load-anim
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
-            <div class="ball"></div>
+        <div class="field-group">
+            <label for="location">departing from:</label>
+            <input type="text" name="location" class="suggest" id="location" placeholder="Simon's Town"/>
         </div>
+
+        <div class="field-group">
+            <label for="destination">and arriving at:</label>
+            <input type="text" name="destination" class="suggest" id="destination" placeholder="Cape Town"/>
+        </div>
+
+        <input type="submit" id="submit" value="Get train times" />
+    </form>
+
+        <div class="load-anim"></div>
 
         <div class="results"></div>
         <div class="updates"></div>

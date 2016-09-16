@@ -1,19 +1,5 @@
 <?php
 
-/*
-    by Max Tyrrell - a WIP
-*/
-
-
-/* TODO: Add features:
-    - Datechecker (inside the chooseTable function) to check if the given day
-    is a public holiday, and if so, override and use the su_ (public holiday)
-    table.
-    - Add sort by arrival (I think this is just reverse order)
-    - Add nice loading animation while waiting for train times to load. Then fade it out when the results come in.
-
-*/
-
 require '../db/connect.php';
 require '../Aura.Sql-2.5.0/autoload.php';
 use Aura\Sql\ExtendedPdo;
