@@ -289,16 +289,18 @@ $(document).ready(function() {
     var destination = document.getElementById("destination");
     
     function myLocSorter(a, b) {
-  var searchQuery = location.value;
-  if ((searchQuery == a.slice(0, searchQuery.length)) && (searchQuery != b.slice(0, searchQuery.length))) { // only a begins with query
+  var searchQuery = location.value.toLowerCase();
+  if ((searchQuery == a.toLowerCase().slice(0, searchQuery.length)) && (searchQuery != b.toLowerCase().slice(0, searchQuery.length))) { // only a begins with query
     return -1;
   }
-  else if ((searchQuery == b.slice(0, searchQuery.length)) && (searchQuery != a.slice(0, searchQuery.length))) { // only b begins with query
+  else if ((searchQuery == b.toLowerCase().slice(0, searchQuery.length)) && (searchQuery != a.toLowerCase().slice(0, searchQuery.length))) { // only b begins with query
     return 1;
   } else { // neither or both begin with query
     return 0;
   }
 }
+
+
 
     function myDestSorter(a, b) {
   var searchQuery = destination.value;
