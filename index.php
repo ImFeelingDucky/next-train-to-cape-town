@@ -4,7 +4,7 @@
 <head>
     <title>Train Times</title>
     <link rel="stylesheet" href="css/style.css" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.1/awesomplete.min.css" type="text/css" />
+    <link rel="stylesheet" href="awesomplete/awesomplete.css" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
