@@ -4,7 +4,6 @@
 }
 
 body, html {
-    font-size: 15px;
     font-family: arial, helvetica, sans-serif;
     background-color: #FFEB3B;
 }
@@ -14,7 +13,12 @@ h1 {
     font-weight: bold;
 }
 
-input[type='text'] {
+label {
+    font-size: 0.8em;
+    display: block;
+}
+
+input {
     margin: 0.5em auto;
     width: 100%;
     height: 1em;
@@ -23,20 +27,23 @@ input[type='text'] {
     padding: 1em 0.5em;
     outline: none;
     border: none;
-    color: #FF5252
-}
-
-label {
-    font-size: 0.8rem;
 }
 
 :-webkit-autofill {
     color: #f8f230 !important;
 }
 
-input[type='text']:focus {
+input:focus {
     color: dark-grey;
     outline: #000 solid;
+}
+
+.valid-station {
+    outline: solid green;
+}
+
+.invalid-station {
+    outline: solid red;
 }
 
 #submit {
@@ -44,7 +51,8 @@ input[type='text']:focus {
     padding: 0.5em 0.5em;
     color: #fff;
     width: 60%;
-    background: #444;
+    min-width: 10em;
+    background-color: rgba(255, 82, 82, 100);
 /*     border-radius: 0.2em; */
     border: none;
     font-size: 1.2em;
@@ -52,18 +60,16 @@ input[type='text']:focus {
     text-align: center;
     margin: 0 auto;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
-#submit:hover {
-    background: #333;
-    cursor: pointer;
+#submit:hover:not(:focus) {
+    background: rgba(255, 255, 255, 50);
+    color: #000;
 }
 
 #submit:focus {
-    background: #FFF;
-    color: #000;
-    cursor: pointer;
-    outline: none
+    background: rgba(255, 82, 82, 10);
 }
 
 .mega-container {
@@ -72,11 +78,9 @@ input[type='text']:focus {
     margin: auto;
     padding: 1em;
     text-align: center;
-/*     border: 1px solid pink; */
 }
 
 .field-group {
-/*     background-color: dark-grey; */
     margin: 1em auto;
     width: 100%;
     display: inline-block;
@@ -86,4 +90,27 @@ input[type='text']:focus {
 
 .results {
     text-align: left;
+}
+
+.train {
+    background: #FFF;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 0.1rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.12), 0 0.05rem 0.1rem rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.train:hover {
+    box-shadow: 0 7px calc(28px/2) rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+}
+
+.train-no {
+    display: block;
+    float: left;
+}
+
+.train-text {
+    display: block;
+    float: right; 
 }
