@@ -21,11 +21,10 @@ $results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "tr
 
 */
 
-// NOTE arguments must be passed in this order:
 function validateData($dest, $loc, $direction, $day, $time_now) {
     /* Validates all data passed to it */
     // TODO: refine this function
-    if ($dest && $loc && $direction && isset($day) && $time_now) {
+    if ($dest && $loc && $direction && isset($day) && isset($time_now)) {
         return true;
     } else {
         $results_array["error"] = 'API_ERROR: INVALID QUERY';
@@ -117,10 +116,8 @@ while ($num_results < 8) {
         } else if ($current_hours < 23) {
             $ite_time_now = ($current_hours + 1) . ":00";
         } else if ($current_hours == 23) {
-            $ite_time_now = "00:00"; // Note that this is 00:00 the next day -- the
-            // timetable may be wrong if it is Friday or Saturday as it may be
-            // displaying times from here on as if it were still the previous day.
-            // TODO: fix this
+            // Don't search later than 23:59
+            break;
         }
     } else {
         if ($current_minutes < 9) {
@@ -154,18 +151,9 @@ while ($num_results < 8) {
     
 }
 
-// This is an array, with each element an object of a mysql row matching one train and its times
-//echo json_encode($results_list);
-
-// DEBUG: TODO: remove
-// for ($i = 0; $i < count($results_array) - 1;$i++) {
-   // echo $results_array[$i][0];
-// }
-
 $results_array["timeout_count"] = $timeout_count;
 $results_array["results_count"] = $num_results;
 
 echo json_encode($results_array);
-//echo $timeout_count;
 
 ?>
