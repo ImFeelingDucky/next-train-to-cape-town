@@ -98,7 +98,7 @@ function squeezeNames(stationName) {
             case "the streets of wenelworth":
             case "our hood":
             case "tha hood":
-                return "Wenelworth";
+                return "Kenilworth";
             case "diep rivier":
             case "diep river":
             case "diepriver":
@@ -123,41 +123,46 @@ function feedbackInput(field) {
     var fieldVal = squeezeNames($(field).val());
 
     if ($.inArray(fieldVal, stations) != -1) {
+        $(field).removeClass("invalid-station");
+        $(field).addClass("valid-station");
+        return true;
+    } else if (!fieldVal) {
+        // Allow an empty field (this will be interpreted as the placeholder value for that field)
+        $(field).removeClass("invalid-station");
         $(field).addClass("valid-station");
         return true;
     } else {
+        $(field).removeClass("valid-station");
         $(field).addClass("invalid-station");
         return false;
     }
     
 }
 
-// $("#location").on('keyup', function() {feedbackInput("#location")});
-// $("#destination").on('keyup', function() {feedbackInput("#destination")});
-$("#location").on('focusout', function() {feedbackInput("#location")});
-$("#destination").on('focusout', function() {feedbackInput("#destination")});
+$("#location").on('focusout keyup', function() {feedbackInput("#location")});
+$("#destination").on('focusout keyup', function() {feedbackInput("#destination")});
 
 // --------------- ON SUBMIT -------------
 $("input#submit").on('click', function() {
 
-    var loc = "";
-    var dest = "";
+    var loc, dest;
 
     if ($("input#location").val() == 'Wenelworth') {
         loc = 'Kenilworth';
-        dest = $("input#destination").val();
+        dest = squeezeNames($.trim($("input#destination").val()));
         $.cookie("wenelworth", true);
-    }
-    else if ($("input#destination").val() == 'Wenelworth') {
+    } else if ($("input#destination").val() == 'Wenelworth') {
         dest = 'Kenilworth';
-        loc = $("input#location").val();
+        loc = squeezeNames($.trim($("input#location").val()));
         $.cookie("wenelworth", true);
+    } else {
+        loc = squeezeNames($.trim($("input#location").val()));
+        dest = squeezeNames($.trim($("input#destination").val()));
     }
-    else {
-        loc = $("input#location").val();
-        dest = $("input#destination").val();
-    }
-
+    
+    loc = loc ? loc : "Simon's Town";
+    dest = dest ? dest : "Cape Town";
+    
     var day = new Date().getDay(); // TODO: allow user to select arbitrary date (date is default today) (API can handle arbitrary dates/times)
     var time_now = getTime(); // TODO: allow user to select abitrary time (time is default time now)
     var direction = "";
@@ -168,65 +173,44 @@ $("input#submit").on('click', function() {
 
     // // Input precalculation //
 
-    loc = $.trim(loc);
-    dest = $.trim(dest);
-
-    // Validation
-    if (loc != "" && dest != "") {
-        
-        loc = squeezeNames(loc);
-        dest = squeezeNames(dest);
-
-        var locno = $.inArray(loc, stations);
-        var destno = $.inArray(dest, stations);
-        
-        if (locno != -1 && destno != -1) {
-            if (locno - destno != 0) {
-                if (locno - destno > 0) {
-                    direction = "north";
-                }
-                else {
-                    direction = "south";
-                }
-
-                // Checks passed; input is valid. Continue:
-                var data_to_send = {
-                    "dest": dest,
-                    "loc": loc,
-                    "direction": direction,
-                    "time_now": time_now,
-                    "day": day
-                };
-                
-                // Finally, POST the data
-                $.post("../ajax/timetable_processor.php", data_to_send, function(data) {
-                    processResults(data);
-                });
-
-                $.get({
-                    url: "http://gometroapp.com/?updates+commuter",
-                    global: false,
-                    success: addUpdates
-                });
-
-
+    var locno = $.inArray(loc, stations);
+    var destno = $.inArray(dest, stations);
+    
+    if (locno != -1 && destno != -1) {
+        if (locno - destno != 0) {
+            if (locno - destno > 0) {
+                direction = "north";
             }
             else {
-                alert("Please enter different station names");
+                direction = "south";
             }
-
+            
+            // Checks passed; input is valid. Continue:
+            var data_to_send = {
+                "dest": dest,
+                "loc": loc,
+                "direction": direction,
+                "time_now": time_now,
+                "day": day
+            };
+            
+            // Finally, POST the data
+            $.post("../ajax/timetable_processor.php", data_to_send, function(data) {
+                processResults(data);
+            });
+            
         }
         else {
-            // Input does not correspond to a station in stations[]
-            alert("Please input correct station names.");
+            alert("Please enter different station names");
         }
-
+        
     }
     else {
-        alert("Please enter in both a destination station and the station you are traveling from.");
+        // Input does not correspond to a station in stations[]
+        alert("Please input correct station names.");
     }
-
-
+    
+    
     // Don't do default form submit action after all this above!
     return false;
 });
@@ -265,17 +249,11 @@ function processResults(data) {
 
 $(document).bind("ajaxSend", function() {
     $(".load-anim").show();
-    console.log("ajaxSend called: Showing .load-anim");
     $(".results").text("");
     $(".debug").text("");
 }).bind("ajaxComplete", function() {
     $(".load-anim").hide();
-    console.log("ajaxComplete called: Hiding .load-anim");
 });
-
-function addUpdates(data) {
-    console.log(data);
-}
 
 // -------------------- AUTOCOMPLETE ------------------
 // Implementing the input boxes' autocomplete

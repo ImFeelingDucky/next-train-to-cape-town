@@ -39,11 +39,12 @@ input:focus {
 }
 
 .valid-station {
-    outline: solid green;
+    border-bottom: solid green;
+    box-sizing: border-box;
 }
 
 .invalid-station {
-    outline: solid red;
+    border-bottom: solid red;
 }
 
 #submit {
