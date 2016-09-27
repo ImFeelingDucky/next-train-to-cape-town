@@ -1,7 +1,7 @@
 <?php
 
 require '../db/connect.php';
-require '../Aura.Sql-2.5.0/autoload.php';
+require '../vendor/aura/sql/autoload.php';
 use Aura\Sql\ExtendedPdo;
 
 $dest = $_POST['dest'];
@@ -63,6 +63,7 @@ if (preg_match("/([^a-z])/", $mysql_friendly_loc) || preg_match("/([^a-z])/", $m
     
 }
 
+$query_limit = 300;
 $timeout_count = 0;
 $num_results = 0;
 
@@ -82,7 +83,7 @@ $pdo_statement->bindParam(':ite_time_now', $ite_time_now, PDO::PARAM_STR);
 
 while ($num_results < 8) {
     
-    if ($timeout_count >= 400) { // Limit to under 400 counts
+    if ($timeout_count >= $query_limit) { // Limit to under 400 counts
     // (it may or may not have found one or more trains)
         if ($num_results < 7) {
             if (!$num_results) {

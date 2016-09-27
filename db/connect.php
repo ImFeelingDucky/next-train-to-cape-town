@@ -1,6 +1,6 @@
 <?php
 
-require '../Aura.Sql-2.5.0/autoload.php';
+require '../vendor/aura/sql/autoload.php';
 use Aura\Sql\ExtendedPdo;
 
 function gimme_pdo() {
