@@ -63,7 +63,7 @@ if (preg_match("/([^a-z])/", $mysql_friendly_loc) || preg_match("/([^a-z])/", $m
     
 }
 
-$query_limit = 300;
+$query_limit = 400;
 $timeout_count = 0;
 $num_results = 0;
 
@@ -81,28 +81,11 @@ $pdo_statement = $pdo->prepare($pdo_query);
 
 $pdo_statement->bindParam(':ite_time_now', $ite_time_now, PDO::PARAM_STR);
 
-while ($num_results < 8) {
+while ($timeout_count <= $query_limit) {
     
-    if ($timeout_count >= $query_limit) { // Limit to under 400 counts
-    // (it may or may not have found one or more trains)
-        if ($num_results < 7) {
-            if (!$num_results) {
-                // TODO: remove this echo statements
-                $results_array["error"] = 'Unfortunately, no results were found at this time and day of the week.';
-                die(json_encode($results_array));
-            } else if ($num_results == 1) {
-                // TODO: remove this echo statements
-                // echo PHP_EOL . "One result was successfully found.";
-            } else {
-                // TODO: remove this echo statements
-                // echo PHP_EOL . "$num_results results were successfully found.";
-            }
-        } else {
-            // TODO: remove this echo statements
-            // echo PHP_EOL . "WOW! RESULTS FOUND BABY!";
-        }
-        
-        break;
+    if ($timeout_count == $query_limit && !$num_results) {
+        $results_array["error"] = 'Unfortunately, no results were found at this time and day of the week.';
+        die(json_encode($results_array));
     }
     
     $current_hours = substr($ite_time_now, 0, 2);
@@ -118,7 +101,8 @@ while ($num_results < 8) {
             $ite_time_now = ($current_hours + 1) . ":00";
         } else if ($current_hours == 23) {
             // Don't search later than 23:59
-            break;
+            $results_array["error"] = "There are no more trains running this evening.";
+            die(json_encode($results_array));
         }
     } else {
         if ($current_minutes < 9) {

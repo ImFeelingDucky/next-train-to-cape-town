@@ -20,7 +20,6 @@ function gimme_pdo() {
             $db_user = $config['username'];
             $db_pass = $config['password'];
         } else {
-        
             $cleardb_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
             $db_host = $cleardb_url['host'];
             $db_name = substr($cleardb_url['path'],1);
@@ -28,8 +27,7 @@ function gimme_pdo() {
             $db_pass = $cleardb_url['pass'];
         
         }
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // TODO: Connect to this database as a limited user only! Use a specifically created account with min privileges!
+
         $pdo = new ExtendedPdo(
             'mysql:host='.$db_host.';dbname='.$db_name,
             $db_user,

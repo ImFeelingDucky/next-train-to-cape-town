@@ -39,7 +39,7 @@ var stations = [
     'Rondebosch',
     'Newlands',
     'Claremont',
-    'Harfield Road',
+    'Harfield Rd',
     'Kenilworth',
     'Wenelworth', // For more information on this station please message me
     'Wynberg',
@@ -85,9 +85,9 @@ function squeezeNames(stationName) {
                 return "Claremont";
             case "harfieldroad":
             case "harfieldrd":
-            case "harfield rd":
             case "harfield":
-                return "Harfield Road";
+            case "harfield road":
+                return "Harfield Rd";
             case "ew":
             case "ww":
             case "east side":
