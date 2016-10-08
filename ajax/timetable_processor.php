@@ -10,15 +10,9 @@ $direction = $_POST['direction'];
 $day = $_POST['day'];
 $time_now = $_POST['time_now'];
 
-// DEBUG: remove this
-// $time_now = "12:23";
-
 $results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0);
-
 /* SAMPLE $results_array JUST BEFORE IT IS ENCODED AS JSON AND PASSED OUT:
-
 $results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "trainno"=>"0195"], ["departure"=>"14:32", "arrival"=>"14:45", "trainno"=>"0195"],["departure"=>"14:42", "arrival"=>"14:55", "trainno"=>"0195"]], "departure_station"=>"Rosebank", "arrival_station"=>"Rondebosch", "error"=>"", "timeout_count"=>0);
-
 */
 
 function validateData($dest, $loc, $direction, $day, $time_now) {
@@ -70,12 +64,12 @@ $num_results = 0;
 $pdo = gimme_pdo();
 
 // Get query ready
-$pdo_query = "SELECT trainno, $mysql_friendly_loc, $mysql_friendly_dest FROM $table WHERE $mysql_friendly_loc=:ite_time_now AND $mysql_friendly_dest IS NOT NULL;";
-// use other query for sorting trains by arrival time... actually maybe just use MySQL SORT BY..?
-  
-$bind_array = array(':loc' => $mysql_friendly_loc,
-    ':dest' => $mysql_friendly_dest,
-    ':ite_time_now' => $ite_time_now);
+$pdo_query = "SELECT trainno, $mysql_friendly_loc, $mysql_friendly_dest FROM $table WHERE $mysql_friendly_loc=:ite_time_now AND $mysql_friendly_dest IS NOT NULL ORDER BY $mysql_friendly_loc ASC;";
+// use other query for sorting trains by arrival time...
+
+// THIS CODE STINKS! 
+// TODO: Use a MySQL Sort function
+$bind_array = array(':ite_time_now' => $ite_time_now);
 
 $pdo_statement = $pdo->prepare($pdo_query);
 

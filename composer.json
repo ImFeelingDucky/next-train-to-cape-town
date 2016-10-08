@@ -1,5 +1,6 @@
 {
     "require": {
-        "aura/sql":"*"
+        "aura/sql":"*",
+        "fabpot/goutte": "^3.1"
     }
 }
