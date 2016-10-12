@@ -9,11 +9,29 @@ $loc = $_POST['loc'];
 $direction = $_POST['direction'];
 $day = $_POST['day'];
 $time_now = $_POST['time_now'];
+$line = $_POST['line'];
 
 $results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0);
 /* SAMPLE $results_array JUST BEFORE IT IS ENCODED AS JSON AND PASSED OUT:
-$results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "trainno"=>"0195"], ["departure"=>"14:32", "arrival"=>"14:45", "trainno"=>"0195"],["departure"=>"14:42", "arrival"=>"14:55", "trainno"=>"0195"]], "departure_station"=>"Rosebank", "arrival_station"=>"Rondebosch", "error"=>"", "timeout_count"=>0);
+$results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "trainno"=>"0195", "status"=>"On time"], ["departure"=>"14:32", "arrival"=>"14:45", "trainno"=>"0195", "status"=>"On time"],["departure"=>"14:42", "arrival"=>"14:55", "trainno"=>"0195", "status"=>"On time"]], "departure_station"=>"Rosebank", "arrival_station"=>"Rondebosch", "error"=>"", "results_count"=>3, "timeout_count"=>0);
 */
+
+function arrayMe($array) {
+    if (is_array($array)) {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $array[$key] = arrayMe($value);
+            }
+            if ($value instanceof stdClass) {
+                $array[$key] = arrayMe((array)$value);
+            }
+        }
+    }
+    if ($array instanceof stdClass) {
+        return arrayMe((array)$array);
+    }
+    return $array;
+}
 
 function validateData($dest, $loc, $direction, $day, $time_now) {
     /* Validates all data passed to it */
@@ -123,6 +141,28 @@ while ($timeout_count <= $query_limit) {
         $results_array["trains"][$num_results]["trainno"] = $result[0];
         $results_array["trains"][$num_results]["departure"] = $result[1];
         $results_array["trains"][$num_results]["arrival"] = $result[2];
+        
+        $updates = json_decode(file_get_contents("updates.txt"), true);
+
+        if (!empty($updates[$line])) {
+            if (!empty($updates[$line]["affected_trains"])) {
+                foreach ($updates[$line]["affected_trains"] as $affected_train_no => $affected_train_status) {
+                    if (intval($affected_train_no) == $result[0]) {
+                        $results_array["trains"][$num_results]["status"] = $affected_train_status;
+                    } else {
+                        $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
+                    }
+                }
+            } else if ($updates[$line]["other_trains"]) {
+                $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
+            } else {
+                // If there were updates available but nothing specific about other/general trains on a line was mentioned, assume they are on time
+                $results_array["trains"][$num_results]["status"] = "On time";
+            }
+           
+        } else {
+            $results_array["trains"][$num_results]["status"] = "MetroRail updates unavailable";
+        }
         $num_results++;
     } else {
         $timeout_count++;

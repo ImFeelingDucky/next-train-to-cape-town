@@ -221,17 +221,19 @@ function processResults(data) {
     }
 
     console.log("Raw data: " + data.toString());
-    data = JSON.parse(data);
-
+    try {
+        data = JSON.parse(data);
+    } catch (e) {
+        // Should actually just try to remove the PHP debug notice (<xdebug> or whatever) and display the stuff without it
+        $(".results").html('<p class="error">ERROR: ' + data["error"] + '</p>');
+    }
     console.log("JSON data: " + data);
 
     $("#debug").html('<p class="debug">' + data["results_count"] + ' results</p>');
     $(".results").text("");
 
     if (data["error"]) {
-
         $(".results").html('<p class="error">ERROR: ' + data["error"] + '</p>');
-
     }
     else if (data) {
         for (var i = 0; i < data["trains"].length; i++) {
