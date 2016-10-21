@@ -48,12 +48,12 @@ function analyseMessage($message, $line) {
     $count_delayed = preg_match_all("/\bdelay/i", $message);
     
     // First split message into sentences. This algorithm does per-sentence analysis.
+    // Exclude "Train no. 0628" from being two different sentenes!
+    $message = str_replace("no.", "no", $message);
+    
     foreach (explode(".", $message) as $sen) {
         $train_no_matches = array();
         $delay_matches = array();
-        if (!$previous_sen) {
-            
-        }
         
         $sen = preg_replace("/(\r|\n|)\s+/m", " ", $sen);
         // Normalise delays notices

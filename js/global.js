@@ -15,7 +15,7 @@ $(document).ready(function() {
     - Add responsive design
 
 */
-
+var priority_time;
 var line = "Southern"; // TODO: other lines
 
 function checkTime(i) {
@@ -164,9 +164,11 @@ $("input#submit").on('click', function() {
     dest = dest ? dest : "Cape Town";
     
     var day = new Date().getDay(); // TODO: allow user to select arbitrary date (date is default today) (API can handle arbitrary dates/times)
-    var time_now = getTime(); // TODO: allow user to select abitrary time (time is default time now)
+    if (!priority_time) {
+        var time_now = getTime(); // TODO: allow user to select abitrary time (time is default time now)
+    }
+    
     var direction = "";
-
 
     // Get time and format it properly
     time_now = getTime();
@@ -190,8 +192,9 @@ $("input#submit").on('click', function() {
                 "dest": dest,
                 "loc": loc,
                 "direction": direction,
-                "time_now": time_now,
-                "day": day
+                "time": time_now,
+                "day": day,
+                "line":"southern" // TODO: add other lines too
             };
             
             // Finally, POST the data
@@ -238,7 +241,12 @@ function processResults(data) {
     else if (data) {
         for (var i = 0; i < data["trains"].length; i++) {
             // Output these nicely :)
-            $(".results").append('<p class="train">TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] + " at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
+            $(".results").append('<p class="train"> ('+data["trains"][i]["status"]+') TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] + " at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
+            if (data["trains"][i]["status"]) {
+                $(".results").append();
+            } else if (data["trains"][i]["other_trains_status"]) {
+                $(".results").append(data["trains"][i]["other_trains_status"]);
+            }
         }
 
     }
