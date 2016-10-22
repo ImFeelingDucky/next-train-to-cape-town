@@ -163,6 +163,8 @@ while ($timeout_count <= $query_limit) {
                     $results_array["debug"] = "JSON could not be decoded :(";
                 }
                 
+            } else {
+                $results_array["debug"] = "Realtime updates were too old so couldn't be used!";
             }
             
             $results_array["status"]["line_message"] = $updates[$line]["message"];
