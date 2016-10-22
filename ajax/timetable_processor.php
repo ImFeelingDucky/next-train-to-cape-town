@@ -12,28 +12,7 @@ $time_now = $_POST['time'];
 $line = $_POST['line'];
 $give_updates = $_POST['updates'];
 
-$results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0, "debug"=>"", "info"=>"", "other_trains_status"=>"");
-/* SAMPLE $results_array JUST BEFORE IT IS ENCODED AS JSON AND PASSED OUT:
-$results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "trainno"=>"0195", "status"=>"On time"], ["departure"=>"14:32", "arrival"=>"14:45", "trainno"=>"0195", "status"=>"On time"],["departure"=>"14:42", "arrival"=>"14:55", "trainno"=>"0195", "status"=>"On time"]], "departure_station"=>"Rosebank", "arrival_station"=>"Rondebosch", "error"=>"", "results_count"=>3, "timeout_count"=>0);
-*/
-
-// TODO: remove this vvv
-function arrayMe($array) {
-    if (is_array($array)) {
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $array[$key] = arrayMe($value);
-            }
-            if ($value instanceof stdClass) {
-                $array[$key] = arrayMe((array)$value);
-            }
-        }
-    }
-    if ($array instanceof stdClass) {
-        return arrayMe((array)$array);
-    }
-    return $array;
-}
+$results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0, "debug"=>"", "info"=>"", "recency"=>"", "status"=>["other_trains"=>"", "line_message"=>""]);
 
 function validateData($dest, $loc, $direction, $day, $time_now) {
     /* Validates all data passed to it */
@@ -147,45 +126,48 @@ while ($timeout_count <= $query_limit) {
         // ================== UPDATES =======================================================
         if ($give_updates != "false" and $give_updates != "no") {
             $updates = json_decode(file_get_contents("updates.txt"), true);
-    
-            // TODO: remove debug
-            $results_array["debug"] = "";
             
-            
-            if (json_decode(file_get_contents("updates.txt"), true) == null) {
-                $results_array["debug"] = "JSON could not be decoded :(";
-            }
-            
-            
-            // if ($updates["southern"]) {
-            //     $results_array["debug"] = "$line updates found!";
-            // }
-            
-            /*
-            // debug JSON
-            var_dump(json_decode(file_get_contents("updates.txt"), true));
-            */
-            
-            else if (!empty($updates[$line])) {
-                $results_array["other_trains_status"] = $updates[$line]["other_trains"];
-                if (!empty($updates[$line]["affected_trains"])) {
-                    foreach ($updates[$line]["affected_trains"] as $affected_train_no => $affected_train_status) {
-                        if (intval($affected_train_no) == $result[0]) {
-                            $results_array["trains"][$num_results]["status"] = $affected_train_status;
-                        } else {
-                            $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
+            if ($updates != null && !empty($updates["meta"]["timestamp"])) {
+                
+                $then = date_create();
+                date_timestamp_set($then,intval($updates["meta"]["timestamp"]));
+                
+                $now = date_create();
+                $diff_mins = date_diff($then, $now, true)->i;
+                
+                $results_array["recency"] = strval($diff_mins) . " mins";
+                
+                if ($diff_mins < 21) {
+                
+                if (!empty($updates[$line])) {
+                    $results_array["status"]["other_trains"] = $updates[$line]["other_trains"];
+                    if (!empty($updates[$line]["affected_trains"])) {
+                        foreach ($updates[$line]["affected_trains"] as $affected_train_no => $affected_train_status) {
+                            if (intval($affected_train_no) == intval($result[0])) {
+                                $results_array["trains"][$num_results]["status"] = $affected_train_status;
+                            } else {
+                                $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
+                            }
                         }
+                    } else if ($updates[$line]["other_trains"]) {
+                        $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
+                        // TODO: not this ^^
+                        // This is a temporary way to show general delays on this line
+                    } else {
+                        // If there were updates available but nothing specific about other/general trains on a line was mentioned, assume they are on time TODO: this might change
+                        $results_array["trains"][$num_results]["status"] = "On time";
                     }
-                } else if ($updates[$line]["other_trains"]) {
-                    $results_array["other_trains_status"] = $updates[$line]["other_trains"];
+                   
                 } else {
-                    // If there were updates available but nothing specific about other/general trains on a line was mentioned, assume they are on time TODO: this might change
-                    $results_array["trains"][$num_results]["status"] = "On time";
+                    $results_array["trains"][$num_results]["status"] = "MetroRail updates unavailable";
+                    $results_array["debug"] = "JSON could not be decoded :(";
                 }
-               
-            } else {
-                $results_array["trains"][$num_results]["status"] = "MetroRail updates unavailable";
+                
             }
+            
+            $results_array["status"]["line_message"] = $updates[$line]["message"];
+            }
+        } else {
             
         }
         $num_results++;

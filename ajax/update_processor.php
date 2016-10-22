@@ -30,7 +30,8 @@ $results = ["southern"=> ["message" => "", "recency" => "", "affected_trains" =>
     "capeflats"=> ["message" => "", "recency" => "", "affected_trains" => [], "other_trains" => "", "maintenance" => []],
     "bellville via monte vista"=> ["message" => "", "recency" => "", "affected_trains" => [], "other_trains" => "", "maintenance" => []],
     "malmesbury/ worcester"=> ["message" => "", "recency" => "", "affected_trains" => [], "other_trains" => "", "maintenance" => []],
-    "business express"=> ["message" => "", "recency" => "", "affected_trains" => [], "other_trains" => "", "maintenance" => []]
+    "business express"=> ["message" => "", "recency" => "", "affected_trains" => [], "other_trains" => "", "maintenance" => []],
+    "meta"=> ["timestamp"=>""]
     ];
 
 function analyseMessage($message, $line) {
@@ -172,6 +173,8 @@ $crawler->filter('#feed > div.listing')->each(function ($node) {
         // Handle non-Metrorail-official reports
     }
 });
+
+$results["meta"]["timestamp"] = time();
 
 file_put_contents("updates.txt", json_encode($results));
 
