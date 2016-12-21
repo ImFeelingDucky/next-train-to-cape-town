@@ -16,10 +16,11 @@ h1 {
 label {
     font-size: 0.8em;
     display: block;
+    margin-bottom: 0.5em;
 }
 
 input {
-    margin: 0.5em auto;
+    margin: auto;
     width: 100%;
     height: 1em;
     font-size: 1.2em;
@@ -91,14 +92,10 @@ input:focus {
     text-align: left;
 }
 
-.results {
-    text-align: left;
-}
-
 .train {
+    max-width: 30em;
     background: #FFF;
-    padding: 1rem;
-    margin: 1rem;
+    margin: 1rem auto 1rem auto;
     border-radius: 0.1rem;
     box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.12), 0 0.05rem 0.1rem rgba(0,0,0,0.24);
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -108,12 +105,74 @@ input:focus {
     box-shadow: 0 7px calc(28px/2) rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
 }
 
-.train-no {
-    display: block;
-    float: left;
+/* ONLY FOR CODEPEN TESTING/DESIGNING */
+#codepen-container {
+  width: 40em;
 }
 
-.train-text {
-    display: block;
-    float: right; 
+.trainno {
+    float: right;
+}
+
+.status-line {
+  display: block;
+  padding: 0.2em;
+  text-align: center;
+  font-family: monospace;
+}
+
+.on-time .status-line {
+    background-color: #76f329;
+}
+
+.late .status-line {
+  background-color: orange;
+}
+
+.unknown .status-line {
+    background-color: grey;
+}
+
+.cancelled .status-line {
+    background-color: red;
+}
+
+.late tbody tr:not(.new) td, .cancelled tbody tr:not(.new) td {
+  text-decoration: line-through;
+}
+
+th {
+    padding: 0.5em;
+    font-size: 0.8rem;
+    font-weight: 400;
+}
+
+td {
+    padding: 0 0 0.5em;
+    font-size: 2rem;
+    font-family: monospace;
+}
+
+tr {
+    text-align: center;
+}
+
+p.station-name {
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.results {
+    padding-top: 0.5em;
+}
+
+.alert {
+    border: 2px solid black;
+    width: 100%;
+    max-width: 25em;
+    background-color: white;
+    padding: 0.5em;
+    margin: 1em auto;
 }

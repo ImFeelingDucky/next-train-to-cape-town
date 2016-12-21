@@ -98,6 +98,7 @@ function squeezeNames(stationName) {
             case "the streets of wenelworth":
             case "our hood":
             case "tha hood":
+            case "the hood":
                 return "Kenilworth";
             case "diep rivier":
             case "diep river":
@@ -121,19 +122,20 @@ function squeezeNames(stationName) {
 
 function feedbackInput(field) {
     var fieldVal = squeezeNames($(field).val());
+    var validationHint = $("." + field.slice(1,field.length) + "-group").find(".validation-hint");
 
     if ($.inArray(fieldVal, stations) != -1) {
-        $(field).removeClass("invalid-station");
-        $(field).addClass("valid-station");
+        validationHint.removeClass("invalid-station");
+        validationHint.addClass("valid-station");
         return true;
     } else if (!fieldVal) {
         // Allow an empty field (this will be interpreted as the placeholder value for that field)
-        $(field).removeClass("invalid-station");
-        $(field).addClass("valid-station");
+        validationHint.removeClass("invalid-station");
+        validationHint.addClass("valid-station");
         return true;
     } else {
-        $(field).removeClass("valid-station");
-        $(field).addClass("invalid-station");
+        validationHint.removeClass("valid-station");
+        validationHint.addClass("invalid-station");
         return false;
     }
     
@@ -144,7 +146,9 @@ $("#destination").on('focusout keyup', function() {feedbackInput("#destination")
 
 // --------------- ON SUBMIT -------------
 $("input#submit").on('click', function() {
-
+    
+    document.querySelector(".results").style.height = "100vh";
+    
     var loc, dest;
 
     if ($("input#location").val() == 'Wenelworth') {
@@ -197,6 +201,11 @@ $("input#submit").on('click', function() {
                 "line":"southern" // TODO: add other lines too
             };
             
+            
+            $('html, body').animate({
+                scrollTop: $(".results").offset().top
+            }, 350);
+            
             // Finally, POST the data
             $.post("../ajax/timetable_processor.php", data_to_send, function(data) {
                 processResults(data);
@@ -228,7 +237,7 @@ function processResults(data) {
         data = JSON.parse(data);
     } catch (e) {
         // Should actually just try to remove the PHP debug notice (<xdebug> or whatever) and display the stuff without it
-        $(".results").html('<p class="error">ERROR: ' + data["error"] + '</p>');
+        $(".results").html('<p class="error">ERROR: Couldnt\' parse JSON...'  + data["error"] + '</p>');
     }
     console.log("JSON data: " + data);
 
@@ -238,23 +247,61 @@ function processResults(data) {
     if (data["error"]) {
         $(".results").html('<p class="error">ERROR: ' + data["error"] + '</p>');
     }
-    else if (data) {
-        for (var i = 0; i < data["trains"].length; i++) {
-            // Output these nicely :)
-            $(".results").append('<p class="train"> ('+data["trains"][i]["status"]+') TRAIN NO. ' + data["trains"][i]["trainno"] + " departs from " + data["departure_station"] + " at " + data["trains"][i]["departure"] + " and arrives at " + data["arrival_station"] + " at " + data["trains"][i]["arrival"] + "</p>");
-            if (data["trains"][i]["status"]) {
-                $(".results").append();
-            } else if (data["trains"][i]["other_trains_status"]) {
-                $(".results").append(data["trains"][i]["other_trains_status"]);
+    if (data) {
+        if (data.trains.length > 0) {
+            for (var i = 0; i < data["trains"].length; i++) {
+                // Output these nicely :)
+                var train = data["trains"][i];
+                
+                var trainno = train.trainno;
+                var trainStatus = train["status"] ? train["status"] : (data['status'].other_trains ? data['status'].other_trains : "UNKNOWN"); // Note here bracket notation is used as 'status' is a DOM API reserved word
+                var departure = data.departure_station;
+                var arrival = data.arrival_station;
+                var departureTime = train.departure;
+                var arrivalTime = train.arrival;
+                
+                $(".results").append(dropInHtmlTrainMediaObject(trainno, trainStatus, departure, arrival, departureTime, arrivalTime));
+                
             }
+        } else {
+            $(".results").append(dropInHtmlAlert(true, "No trains are running now. Try again at another time."));
         }
 
     }
     else {
         $("#debug").text('No data received.');
     }
+}
 
+function dropInHtmlTrainMediaObject(trainno, trainStatus, departure, arrival, departureTime, arrivalTime) {
+    if (trainStatus.toUpperCase() === "ON TIME") {
+        return '<div class="train on-time"> <div class="status-line">TRAIN '+ trainno + ' - ' + trainStatus +'</div> <table style=" width: 100%; "> <thead> <tr> <th>DEPARTING FROM<p class="station-name">'+ departure +'</p></th> <th>ARRIVING IN<p class="station-name">'+ arrival +'</p></th> </tr> </thead> <tbody> <tr> <td>'+ departureTime +'</td> <td>'+ arrivalTime +'</td> </tr> </tbody> </table> </div>';
+    } else if (trainStatus.toUpperCase() === "CANCELLED") {
+        return '<div class="train cancelled"> <div class="status-line">TRAIN '+ trainno + ' - ' + trainStatus +'</div> <table style=" width: 100%; "> <thead> <tr> <th>DEPARTING FROM<p class="station-name">'+ departure +'</p></th> <th>ARRIVING IN<p class="station-name">'+ arrival +'</p></th> </tr> </thead> <tbody> <tr> <td>'+ departureTime +'</td> <td>'+ arrivalTime +'</td> </tr> </tbody> </table> </div>';
+    } else if (trainStatus.toUpperCase() === "UNKNOWN" || !trainStatus) {
+        return '<div class="train unknown"> <div class="status-line">TRAIN '+ trainno + ' - ' +'UNKNOWN STATUS</div> <table style=" width: 100%; "> <thead> <tr> <th>DEPARTING FROM<p class="station-name">'+ departure +'</p></th> <th>ARRIVING IN<p class="station-name">'+ arrival +'</p></th> </tr> </thead> <tbody> <tr> <td>'+ departureTime +'</td> <td>'+ arrivalTime +'</td> </tr> </tbody> </table> </div>';
+    } else {
+        var delay = /([0-9]\+?)+/g.exec(trainStatus)[0];
+        return '<div class="train late"> <div class="status-line">TRAIN '+ trainno + ' - ' + trainStatus +'</div> <table style=" width: 100%; "> <thead> <tr> <th>DEPARTING FROM<p class="station-name">'+ departure +'</p></th> <th>ARRIVING IN<p class="station-name">'+ arrival +'</p></th> </tr> </thead> <tbody> <tr> <td>'+ departureTime +'</td> <td>'+ arrivalTime +'</td> </tr> <tr class="new"><td>'+ calculateNewTime(departureTime, delay) +'</td><td>'+ calculateNewTime(arrivalTime, delay) +'</td></tr> </tbody> </table> </div>';
+    }
+}
 
+function calculateNewTime(oldTime, delay) {
+    var preString = "&plusmn;";
+    if (delay.charAt(delay.length - 1) === "+") {
+        delay.replace("+", "");
+        preString = "AFTER ";
+    }
+    var oldDateObj = new Date('1-1-2000 ' + oldTime.toString());
+    var newDateObj = new Date(oldDateObj.getTime() + delay*60000);
+    var hours = newDateObj.getHours().toString();
+    var mins = newDateObj.getMinutes().toString();
+    
+    return preString + (hours.length < 2 ? ('0' + hours) : hours) + ':' + (mins.length < 2 ? ('0' + mins) : mins);
+}
+
+function dropInHtmlAlert(isFatal, message) {
+    return '<div class="alert'+ (isFatal ? ' fatal' : '') +'">'+ message +'</div>';
 }
 
 $(document).bind("ajaxSend", function() {

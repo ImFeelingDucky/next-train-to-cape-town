@@ -148,8 +148,14 @@ function analyseMessage($message, $line) {
     }
 }
 
+$updates_url = 'http://gometroapp.com/?updates+commuter';
+
+if (isset($_GET['URL'])) {
+    $updates_url = $_GET['URL'];
+}
+
 // Get the updates website
-$crawler = $client->request('GET', 'http://gometroapp.com/?updates+commuter');
+$crawler = $client->request('GET', $updates_url);
 
 // Parse the page and insert info into $results
 $crawler->filter('#feed > div.listing')->each(function ($node) {

@@ -8,11 +8,15 @@ $dest = $_POST['dest'];
 $loc = $_POST['loc'];
 $direction = $_POST['direction'];
 $day = $_POST['day'];
-$time_now = $_POST['time'];
-$line = $_POST['line'];
-$give_updates = $_POST['updates'];
+$time_now = $_POST['time_now'];
 
-$results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0, "debug"=>"", "info"=>"", "recency"=>"", "status"=>["other_trains"=>"", "line_message"=>""]);
+$results_array = array("trains"=>[], "departure_station"=>$loc, "arrival_station"=>$dest, "error"=>"", "timeout_count"=>0, "results_count"=>0);
+
+/* SAMPLE $results_array JUST BEFORE IT IS ENCODED AS JSON AND PASSED OUT:
+
+$results_array = array("trains"=>[["departure"=>"14:22", "arrival"=>"14:35", "trainno"=>"0195"], ["departure"=>"14:32", "arrival"=>"14:45", "trainno"=>"0195"],["departure"=>"14:42", "arrival"=>"14:55", "trainno"=>"0195"]], "departure_station"=>"Rosebank", "arrival_station"=>"Rondebosch", "error"=>"", "timeout_count"=>0);
+
+*/
 
 function validateData($dest, $loc, $direction, $day, $time_now) {
     /* Validates all data passed to it */
@@ -63,12 +67,14 @@ $num_results = 0;
 $pdo = gimme_pdo();
 
 // Get query ready
-$pdo_query = "SELECT trainno, $mysql_friendly_loc, $mysql_friendly_dest FROM $table WHERE $mysql_friendly_loc=:ite_time_now AND $mysql_friendly_dest IS NOT NULL ORDER BY $mysql_friendly_loc ASC;";
+$pdo_query = "SELECT trainno, $mysql_friendly_loc, $mysql_friendly_dest FROM $table WHERE $mysql_friendly_loc=:ite_time_now AND $mysql_friendly_dest IS NOT NULL;";
 // use other query for sorting trains by arrival time...
 
-// THIS CODE STINKS! 
+// THIS CODE STANKS! 
 // TODO: Use a MySQL Sort function
-$bind_array = array(':ite_time_now' => $ite_time_now);
+$bind_array = array(':loc' => $mysql_friendly_loc,
+    ':dest' => $mysql_friendly_dest,
+    ':ite_time_now' => $ite_time_now);
 
 $pdo_statement = $pdo->prepare($pdo_query);
 
@@ -94,7 +100,7 @@ while ($timeout_count <= $query_limit) {
             $ite_time_now = ($current_hours + 1) . ":00";
         } else if ($current_hours == 23) {
             // Don't search later than 23:59
-            $results_array["info"] = "There are no more trains running this evening.";
+            $results_array["error"] = "There are no more trains running this evening.";
             die(json_encode($results_array));
         }
     } else {
@@ -122,61 +128,6 @@ while ($timeout_count <= $query_limit) {
         $results_array["trains"][$num_results]["trainno"] = $result[0];
         $results_array["trains"][$num_results]["departure"] = $result[1];
         $results_array["trains"][$num_results]["arrival"] = $result[2];
-        
-        // ================== UPDATES =======================================================
-        if ($give_updates != "false" && $give_updates != "no") {
-            $updates = json_decode(file_get_contents("updates.txt"), true);
-            
-            if ($updates != null && !empty($updates["meta"]["timestamp"])) {
-                
-                if ($updates["meta"]["timestamp"] === 'DEBUG') {
-                    $diff_mins = 'DEBUG';
-                } else {
-                    $then = date_create();
-                    date_timestamp_set($then, intval($updates["meta"]["timestamp"]));
-                    
-                    $now = date_create();
-                    
-                    $diff_mins = date_diff($then, $now, true)->i;
-                    
-                    $results_array["recency"] = strval($diff_mins) . " mins";
-                }
-                
-                if ($diff_mins < 21 || $diff_mins === "DEBUG") {
-                
-                if (!empty($updates[$line])) {
-                    $results_array["status"]["other_trains"] = $updates[$line]["other_trains"];
-                    if (!empty($updates[$line]["affected_trains"])) {
-                        foreach ($updates[$line]["affected_trains"] as $affected_train_no => $affected_train_status) {
-                            if (intval($affected_train_no) === intval($result[0])) {
-                                $results_array["trains"][$num_results]["status"] = $affected_train_status;
-                            } else {
-                                $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
-                            }
-                        }
-                    } else if ($updates[$line]["other_trains"]) {
-                        $results_array["trains"][$num_results]["status"] = $updates[$line]["other_trains"];
-                        // TODO: not this ^^
-                        // This is a temporary way to show general delays on this line
-                    } else {
-                        // If there were updates available but nothing specific about other/general trains on a line was mentioned, assume they are on time TODO: this might change
-                        $results_array["trains"][$num_results]["status"] = "On time";
-                    }
-                   
-                } else {
-                    $results_array["trains"][$num_results]["status"] = "UNKNOWN";
-                    $results_array["debug"] = "JSON could not be decoded :(";
-                }
-                
-            } else {
-                $results_array["debug"] = "Realtime updates were too old so couldn't be used!";
-            }
-            
-            $results_array["status"]["line_message"] = $updates[$line]["message"];
-            }
-        } else {
-            
-        }
         $num_results++;
     } else {
         $timeout_count++;
